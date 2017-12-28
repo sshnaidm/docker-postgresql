@@ -2,11 +2,12 @@
 
 
 if [ -z "$(ls -A "$PGDATA")" ]; then
-      cp -f /usr/share/postgresql/postgresql.conf.sample /var/lib/postgresql/postgresql.conf
-      chown postgres: -R $PGDATA
+    #cp -f /usr/share/postgresql/postgresql.conf.sample /var/lib/postgresql/postgresql.conf
+    cp -f /usr/share/postgresql/postgresql.conf.sample $PGDATA/postgresql.conf 
+    chown postgres: -R $PGDATA
 
     gosu postgres initdb
-    sed -ri "s/^#(listen_addresses\s*=\s*)\S+/\1'*'/" /var/lib/postgresql/postgresql.conf
+    sed -ri "s/^#(listen_addresses\s*=\s*)\S+/\1'*'/" $PGDATA/postgresql.conf
 
     : ${POSTGRES_USER:="postgres"}
     : ${POSTGRES_DB:=$POSTGRES_USER}
