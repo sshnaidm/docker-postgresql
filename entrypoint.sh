@@ -1,11 +1,9 @@
 #!/bin/bash
-
+mkdir -p "$PGDATA"
+chmod 0700 -R $PGDATA
+chown postgres: -R $PGDATA
 
 if [ -z "$(ls -A "$PGDATA")" ]; then
-    #cp -f /usr/share/postgresql/postgresql.conf.sample /var/lib/postgresql/postgresql.conf
-    cp -f /usr/share/postgresql/postgresql.conf.sample $PGDATA/postgresql.conf 
-    chown postgres: -R $PGDATA
-
     gosu postgres initdb
     sed -ri "s/^#(listen_addresses\s*=\s*)\S+/\1'*'/" $PGDATA/postgresql.conf
 
@@ -62,6 +60,7 @@ if [ -z "$(ls -A "$PGDATA")" ]; then
     { echo; echo "host all all 0.0.0.0/0 $authMethod"; } >> "$PGDATA"/pg_hba.conf
 else
     chown postgres: -R $PGDATA
+    sed -ri "s/^#(listen_addresses\s*=\s*)\S+/\1'*'/" $PGDATA/postgresql.conf
 fi
 
 exec gosu postgres "$@"
